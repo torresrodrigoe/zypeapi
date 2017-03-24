@@ -1,0 +1,62 @@
+<div class="container">
+  <div class="video-detail col-sm-8 col-sm-offset-2">
+    <input id="video_id" type="hidden" value="<%= @videodetail['_id'] %>">
+    <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>"/>
+
+    <h1 class="video-title"><%= @videodetail['title'] %></h1>
+    <div class="video-top">
+      <% if (@videodetail['subscription_required'] == true) %>
+        <% if(@token) %>
+          <div class="video-player">
+            <div id="zype_<%= @videodetail['_id'] %>"></div>
+            <script src="https://player.zype.com/embed/<%= @videodetail['_id'] %>.js?autoplay=true&access_token=<%= @token %>" type="text/javascript"></script>
+          </div>
+        <% else %>
+          <div class="video-to-suscribe alert alert-warning text-center">
+            <p>Subscription paywall</p><br/>
+            <button type="button" class="btn btn-primary buttonLogin" onclick="showLoginModal()">Login</button>
+            <button type="button" class="btn btn-info buttonSuscribe">Suscribe</button>
+          </div>
+        <% end %>
+      <% else %>
+      <div class="video-player">
+        <div id="zype_<%= @videodetail['_id'] %>"></div>
+        <script src="https://player.zype.com/embed/<%= @videodetail['_id'] %>.js?autoplay=true&app_key=<%= Rails.application.secrets.appkey %>" type="text/javascript"></script>
+      </div>
+      <% end %>
+    </div>
+    <div class="video-bottom">
+      <p class="video-description"><%= @videodetail['description'] %></p>
+    </div>
+
+    <a onclick="window.history.back();" class="btn btn-primary">Back</a>
+  </div>
+</div>
+
+<div id="login-modal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Zype Login</h4>
+      </div>
+      <form action="/login" method="POST">
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>User</label>
+            <input class="form-control" type="text" name="user" value="test@test.com">
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input class="form-control" type="password" name="password" value="password">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Login</button>
+        </div>
+      </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
